@@ -1,53 +1,110 @@
-print("BATALHA EUFORICA")
-print("BEM VINDO AO JOGO")
-print("o jogo se passa na sala de estar da casa da Cassie ")
-
-print("personagem 1: Rue")
-print("personagem 2: Maddy")
-print("inimigo Cassie")
 import random
 
+# ================= INTRO =================
+print("===================================")
+print("        BATALHA EUFÓRICA          ")
+print("===================================\n")
 
+print("BEM-VINDO AO JOGO!")
+print("Aqui você vai descontar toda sua raiva 😈\n")
 
-print("escolha seu personagem: 1 para Rue, 2 para Maddy para essa batalha com Cassie")
-personagem = int(input())
-if personagem == 1:  print("Rue")
-elif personagem == 2:  print("Maddy")
-else:  print("personagem invalido")
+print("PERSONAGENS:")
+print("1 - Rue (100 HP) → estratégica")
+print("2 - Maddy (100 HP) → agressiva\n")
 
+print("INIMIGO:")
+print("Cassie (100 HP) → imprevisível\n")
 
-for i in range(1,3):
-    print(f"essa é a sua {i} rodada")
-    if personagem == 1:
-        print("escolha seu ataque: 1 para xingamentos, 2 para tapas")
-        ataque = int(input())
-        if ataque == 1:  print("Rue chama Cassie de #@!&*#$%! ! causa 15 de dano")
-        elif ataque == 2:  print("Rue da um tapa no rosto da Cassie. causa 25 de dano")
-        else: print("ataque invalido")
+# ================= ESCOLHA =================
+while True:
+    personagem = input("Escolha seu personagem (1 ou 2): ")
 
-    if personagem == 2:
-        print("escolha seu ataque: 1 para tapa, 2 para puxão de cabelo")
-        ataque = int(input())
-        if ataque == 1: print("Maddy chega perto de Cassie e da tapas no rosto dela. causa 25 de dano")
-        elif ataque == 2: print("Maddy chega perto da Cassie e puxa o cabelo dela. causa 15 de dano")
-        else: print("ataque invalido")
+    if personagem.isdigit():
+        personagem = int(personagem)
 
-        print("Vez da Cassie")
+        if personagem == 1:
+            nome = "Rue"
+            print("\nVocê escolheu RUE. Boa sorte!\n")
+            break
 
-        ataque_inimigo = random.randint(1,2)
-        if ataque_inimigo == 1: print("Cassie começa a chorar, causa 0 dano")
-        elif ataque_inimigo == 2: print("Cassie começa a xingar, causa 10 de dano")
+        elif personagem == 2:
+            nome = "Maddy"
+            print("\nVocê escolheu MADDY. Boa sorte!\n")
+            break
 
-        print("vida do jogador")
-        if personagem == 1 and ataque_inimigo == 1:  print("Rue não se atingiu. tem 100 de vida restante")
-        if personagem == 1 and ataque_inimigo == 2: print("Rue se ofendeu. tem 90 de vida restante")
-        if personagem == 2 and ataque_inimigo == 1: print("Maddy não se atingiu. tem 100 de vida restante")
-        if personagem == 2 and ataque_inimigo == 2: print("Maddy se ofendeu. tem 90 de vida restante")
+# ================= VIDA =================
+vida = 100
+vidainimigo = 100
+dano_persistente = 0
 
-        print("vida da Cassie")
-        if personagem == 1 and ataque == 1: print("Cassie se ofendeu e comecou a chorar. tem 85 de vida restante")
-        if personagem == 1 and ataque == 2: print("Cassie se machucou. tem 75 de vida restante")
-        if personagem == 2 and ataque == 1: print("Cassie cai no chão com os tapas. tem 75 de vida restante")
-        if personagem == 2 and ataque == 2: print("Cassie tropeça e se machuca. tem 85 de vida restante")
+# ================= LOOP DO JOGO =================
+while vida > 0 and vidainimigo > 0:
 
+    print("\n===================================")
+    print(f"Sua vida: {vida}")
+    print(f"Vida da Cassie: {vidainimigo}")
+    print("===================================\n")
 
+    # ================= TURNO DO JOGADOR =================
+    print("SUA VEZ")
+    print("1 - MULTI-DANO (combo)")
+    print("2 - DANO PERSISTENTE")
+
+    while True:
+        ataque = input("Escolha seu ataque: ")
+
+        if ataque.isdigit():
+            ataque = int(ataque)
+            if ataque == 1 or ataque == 2:
+                break
+
+    # ================= MULTI-DANO REAL =================
+    if ataque == 1:
+        print(f"\n{nome} iniciou um MULTI-DANO!")
+
+        total_dano = 0
+
+        for i in range(4):  # 4 hits
+            hit = random.randint(5, 12)
+            vidainimigo -= hit
+            total_dano += hit
+            print(f"Hit {i+1}: {hit} de dano")
+
+        print(f"Dano total do combo: {total_dano}")
+
+    # ================= DANO PERSISTENTE =================
+    elif ataque == 2:
+        dano = random.randint(5, 10)
+        vidainimigo -= dano
+        dano_persistente = random.randint(3, 7)
+
+        print(f"{nome} causou {dano} de dano")
+        print(f"Ativou dano persistente de {dano_persistente}")
+
+    # ================= EFEITO PERSISTENTE =================
+    if dano_persistente > 0:
+        vidainimigo -= dano_persistente
+        print(f"Dano persistente causa {dano_persistente} na Cassie")
+
+    # vitória
+    if vidainimigo <= 0:
+        print("\nCassie foi derrotada! Você venceu!")
+        break
+
+    # ================= VEZ DA CASSIE =================
+    print("\nVEZ DA CASSIE")
+
+    ataque_inimigo = random.randint(10, 25)
+    vida -= ataque_inimigo
+
+    print(f"Cassie causou {ataque_inimigo} de dano em {nome}")
+
+    # derrota
+    if vida <= 0:
+        print("\nVocê foi derrotado pela Cassie!")
+        break
+
+# ================= FIM =================
+print("\n===================================")
+print("FIM DE JOGO")
+print("===================================")
