@@ -8,100 +8,151 @@ print("===================================\n")
 print("BEM-VINDO AO JOGO!")
 print("Aqui você vai descontar toda sua raiva 😈\n")
 
-print("PERSONAGENS:")
-print("1 - Rue (100 HP) → estratégica")
-print("2 - Maddy (100 HP) → agressiva\n")
+# ================= PERSONAGENS =================
+personagens = {
+    1: {
+        "nome": "Rue",
+        "vida": 100
+    },
 
-print("INIMIGO:")
-print("Cassie (100 HP) → imprevisível\n")
+    2: {
+        "nome": "Maddy",
+        "vida": 100
+    }
+}
+
+# ================= INIMIGO =================
+inimigo = {
+    "nome": "Cassie",
+    "vida": 100,
+    "dano_persistente": []
+}
+
+# ================= MOSTRAR PERSONAGENS =================
+print("PERSONAGENS:")
+
+for chave, personagem in personagens.items():
+    print(f"{chave} - {personagem['nome']} ({personagem['vida']} HP)")
+
+print("\nINIMIGO:")
+print(f"{inimigo['nome']} ({inimigo['vida']} HP)\n")
 
 # ================= ESCOLHA =================
 while True:
-    personagem = input("Escolha seu personagem (1 ou 2): ")
 
-    if personagem.isdigit():
-        personagem = int(personagem)
+    escolha = input("Escolha seu personagem (1 ou 2): ")
 
-        if personagem == 1:
-            nome = "Rue"
-            print("\nVocê escolheu RUE. Boa sorte!\n")
+    if escolha.isdigit():
+
+        escolha = int(escolha)
+
+        if escolha in personagens:
+
+            jogador = personagens[escolha]
+
+            print(f"\nVocê escolheu {jogador['nome'].upper()}! Boa sorte!\n")
+
             break
-
-        elif personagem == 2:
-            nome = "Maddy"
-            print("\nVocê escolheu MADDY. Boa sorte!\n")
-            break
-
-# ================= VIDA =================
-vida = 100
-vidainimigo = 100
-dano_persistente = 0
 
 # ================= LOOP DO JOGO =================
-while vida > 0 and vidainimigo > 0:
+while jogador["vida"] > 0 and inimigo["vida"] > 0:
 
     print("\n===================================")
-    print(f"Sua vida: {vida}")
-    print(f"Vida da Cassie: {vidainimigo}")
+    print(f"Vida de {jogador['nome']}: {jogador['vida']}")
+    print(f"Vida da {inimigo['nome']}: {inimigo['vida']}")
     print("===================================\n")
 
-    # ================= TURNO DO JOGADOR =================
+    # ================= MENU =================
     print("SUA VEZ")
-    print("1 - MULTI-DANO (combo)")
-    print("2 - DANO PERSISTENTE")
+    print("1 - SEQUÊNCIA DE TAPAS")
+    print("2 - PUXÃO DE CABELO")
 
     while True:
+
         ataque = input("Escolha seu ataque: ")
 
         if ataque.isdigit():
+
             ataque = int(ataque)
+
             if ataque == 1 or ataque == 2:
                 break
 
-    # ================= MULTI-DANO REAL =================
+    # ================= ATAQUE 1 =================
     if ataque == 1:
-        print(f"\n{nome} iniciou um MULTI-DANO!")
+
+        print(f"\n{jogador['nome']} iniciou uma SEQUÊNCIA DE TAPAS!")
 
         total_dano = 0
 
-        for i in range(4):  # 4 hits
-            hit = random.randint(5, 12)
-            vidainimigo -= hit
-            total_dano += hit
-            print(f"Hit {i+1}: {hit} de dano")
+        for i in range(4):
+
+            tapa = random.randint(2, 7)
+
+            inimigo["vida"] -= tapa
+
+            total_dano += tapa
+
+            print(f"Hit {i+1}: {tapa} de dano")
 
         print(f"Dano total do combo: {total_dano}")
 
-    # ================= DANO PERSISTENTE =================
+    # ================= ATAQUE 2 =================
     elif ataque == 2:
-        dano = random.randint(5, 10)
-        vidainimigo -= dano
-        dano_persistente = random.randint(3, 7)
 
-        print(f"{nome} causou {dano} de dano")
-        print(f"Ativou dano persistente de {dano_persistente}")
+        dano = random.randint(2, 7)
 
-    # ================= EFEITO PERSISTENTE =================
-    if dano_persistente > 0:
-        vidainimigo -= dano_persistente
-        print(f"Dano persistente causa {dano_persistente} na Cassie")
+        inimigo["vida"] -= dano
 
-    # vitória
-    if vidainimigo <= 0:
-        print("\nCassie foi derrotada! Você venceu!")
+        novo_dano = random.randint(3, 8)
+
+        inimigo["dano_persistente"].append(novo_dano)
+
+        print(f"\n{jogador['nome']} causou {dano} de dano")
+
+        print(
+            f"Cassie está com {inimigo['dano_persistente']} dor na cabeça"
+        )
+
+    # ================= DANO PERSISTENTE =================
+    if len(inimigo["dano_persistente"]) > 0:
+
+        dano_total = sum(inimigo["dano_persistente"])
+
+        inimigo["vida"] -= dano_total
+
+        print(f"Cassie sofreu {dano_total} de dor na cabeça")
+
+    # impedir vida negativa
+    inimigo["vida"] = max(0, inimigo["vida"])
+
+    # ================= VITÓRIA =================
+    if inimigo["vida"] <= 0:
+
+        print(f"\n{inimigo['nome']} foi derrotada!")
+        print("VOCÊ VENCEU 😈")
+
         break
 
-    # ================= VEZ DA CASSIE =================
+    # ================= TURNO DA CASSIE =================
     print("\nVEZ DA CASSIE")
 
-    ataque_inimigo = random.randint(10, 25)
-    vida -= ataque_inimigo
+    ataque_inimigo = random.randint(10, 40)
 
-    print(f"Cassie causou {ataque_inimigo} de dano em {nome}")
+    jogador["vida"] -= ataque_inimigo
 
-    # derrota
-    if vida <= 0:
-        print("\nVocê foi derrotado pela Cassie!")
+    jogador["vida"] = max(0, jogador["vida"])
+
+    print(
+        f"{inimigo['nome']} causou {ataque_inimigo} de dano em {jogador['nome']}"
+    )
+
+    # ================= DERROTA =================
+    if jogador["vida"] <= 0:
+
+        print(f"\n{jogador['nome']} foi derrotado!")
+        print("CASSIE VENCEU 😈")
+
         break
 
 # ================= FIM =================
